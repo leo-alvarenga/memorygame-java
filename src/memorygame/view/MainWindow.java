@@ -39,7 +39,7 @@ public class MainWindow extends JFrame {
 
         this.startMessage();
 
-        this.setTitle("Jogo da memória: Warhammer 40,000 edition - Version (b: 2.4.7, stable)");
+        this.setTitle("Jogo da memória: Warhammer 40,000 edition - Version (b: 2.5.0, stable)");
 
         this.pack();
 
