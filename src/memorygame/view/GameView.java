@@ -7,10 +7,10 @@ import memorygame.model.Card;
 import memorygame.control.Controller;
 
 /**
- *  Painel do jogo; invocado dentro da janela principal.
+ * Painel do jogo; invocado dentro da janela principal.
  * @author Leonardo
- * @version 2.4.7
- * @since 1.5.0
+ * @version 2.5.0b - stable
+ * @since 1.5.0b - stable
  */
 public class GameView extends JPanel {
 
@@ -125,75 +125,35 @@ public class GameView extends JPanel {
 
         exit_button.setText("Reset");
         exit_button.setPreferredSize(new java.awt.Dimension(85, 45));
-        exit_button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetButtonActionPerformed(evt);
-            }
-        });
+        exit_button.addActionListener(this::resetButtonActionPerformed);
 
         reset_button.setText("Sair");
         reset_button.setPreferredSize(new java.awt.Dimension(85, 45));
-        reset_button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitButtonActionPerformed(evt);
-            }
-        });
+        reset_button.addActionListener(this::exitButtonActionPerformed);
 
         this.card[0].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[0].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card1ActionPerformed(evt);
-            }
-        });
+        this.card[0].addActionListener(this::card1ActionPerformed);
 
         this.card[1].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[1].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card2ActionPerformed(evt);
-            }
-        });
+        this.card[1].addActionListener(this::card2ActionPerformed);
 
         this.card[2].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[2].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card3ActionPerformed(evt);
-            }
-        });
+        this.card[2].addActionListener(this::card3ActionPerformed);
 
         this.card[3].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[3].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card4ActionPerformed(evt);
-            }
-        });
+        this.card[3].addActionListener(this::card4ActionPerformed);
 
         this.card[4].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[4].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card5ActionPerformed(evt);
-            }
-        });
+        this.card[4].addActionListener(this::card5ActionPerformed);
 
         this.card[5].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[5].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card6ActionPerformed(evt);
-            }
-        });
+        this.card[5].addActionListener(this::card6ActionPerformed);
 
         this.card[6].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[6].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card7ActionPerformed(evt);
-            }
-        });
+        this.card[6].addActionListener(this::card7ActionPerformed);
 
         this.card[7].setPreferredSize(new java.awt.Dimension(150, 150));
-        this.card[7].addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                card8ActionPerformed(evt);
-            }
-        });
+        this.card[7].addActionListener(this::card8ActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(card_panel);
         card_panel.setLayout(jPanel1Layout);
@@ -333,7 +293,7 @@ public class GameView extends JPanel {
             this.control.wait(200);
 
             boolean was_a_match;
-            was_a_match = this.control.checkForAMatch(this.card);
+            was_a_match = this.control.checkForAMatch();
 
             if(!was_a_match){
                 this.control.wait(500);
@@ -366,10 +326,10 @@ public class GameView extends JPanel {
         int pos;
 
         while(!this.control.isPlayersTurn()){
-            pos = this.cpu.makeAMove(NUMBER_OF_PAIRS);
+            pos = this.cpu.makeAMove();
             this.flipCard(pos);
 
-            pos = this.cpu.makeAMove(NUMBER_OF_PAIRS);
+            pos = this.cpu.makeAMove();
             this.flipCard(pos);
 
             this.control.wait(500);
@@ -436,7 +396,7 @@ public class GameView extends JPanel {
             msg = msg + this.control.getPlayersScore() + "<i>X</i>" + this.control.getCpusScore();
         }
 
-        JOptionPane.showMessageDialog(this, msg);
+        JOptionPane.showMessageDialog(this, msg, "Fim de Jogo!", JOptionPane.PLAIN_MESSAGE);
         this.reset();
     }
 

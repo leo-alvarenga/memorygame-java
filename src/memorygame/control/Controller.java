@@ -8,8 +8,8 @@ import java.util.Random;
 /**
  * Controller do jogo; Gera e repássa todas as informações personalizadas das cartas; Gerencia os placares, placares e condições do jogo.
  * @author Leonardo
- * @version 2.4.7
- * @since 1.3.0
+ * @version 2.5.0b - stable
+ * @since 1.3.0b - stable
  */
 public class Controller {
     /** Armazena os endereços das imagens de cada par. */
@@ -23,18 +23,26 @@ public class Controller {
     final private String default_msg;
 
     /** Armazena uma cópia de cada carta que está virada para cima (com a imagem exposta). */
-    private Card[] cards_facing_up;
+    final private Card[] cards_facing_up;
     /** Armazena se é a vez do jogador (true), ou não (false). */
     private boolean is_players_turn;
     /** Armazena se é hora de checar para ver se existe um par formado (true), ou não (false). */
     private boolean ready_to_check;
 
+    /** Armazena o número de cartas voltadas para cima. */
     private int number_of_cards_facing_up;
+    /** Armazena o número de pares formados pelo jogados. */
     private int players_score;
+    /** Armazena o número de pares formados pela Cpu. */
     private int cpus_score;
+    /** Armazena o número de cartas que ainda restam no jogo. */
     private int remaining_cards;
 
+    /** Inicializa o controlador de acordo com o número de pares existentes.
+     * @param number_of_pairs Número de pares existentes.
+     */
     public Controller(int number_of_pairs){
+        // Um passo necessário para a implementação do jogo com mais do que 4 pares é adicionar mais imagens aqui...
         this.images = new String[5];
         this.images[0] = "/1.png";
         this.images[1] = "/2.png";
@@ -63,6 +71,12 @@ public class Controller {
         this.remaining_cards = (number_of_pairs * 2);
     }
 
+    /**
+     * Setta os valores para seus valores padrões.
+     * @param number_of_pairs Números de pares existentes.
+     * @param cards Vetor de cartas.
+     * @return Uma cópia modificada do vetor de cartas.
+     */
     public Card[] start(int number_of_pairs, Card[] cards){
         cards = this.resetCards(number_of_pairs, cards);
 
@@ -79,6 +93,12 @@ public class Controller {
         return cards;
     }
 
+    /**
+     * Reseta os valores para seus valores iniciais, reembaralhando as cartas.
+     * @param number_of_pairs Números de pares existentes.
+     * @param cards Vetor de cartas.
+     * @return Uma cópia modificada do vetor de cartas.
+     */
     public Card[] resetCards(int number_of_pairs, Card[] cards){
         int pair_id, position;
         pair_id = 0;
@@ -108,19 +128,16 @@ public class Controller {
         return cards;
     }
 
+    /**
+     * Reseta tudo.
+     * @param number_of_pairs Número de pares existentes.
+     * @return Um vetor de cartas, reembaralhado e pronto para o início do jogo.
+     */
     public Card[] reset(int number_of_pairs){
-        this.cards_facing_up[0] = null;
-        this.cards_facing_up[1] = null;
-        this.is_players_turn = true;
-        this.ready_to_check = false;
-
-        this.number_of_cards_facing_up = 0;
-        this.players_score = 0;
-        this.cpus_score = 0;
-        this.remaining_cards = (number_of_pairs * 2);
-
         Card[] cards;
         cards = new Card[number_of_pairs * 2];
+
+        this.start(number_of_pairs, cards);
 
         cards = this.resetCards(number_of_pairs, cards);
 
@@ -162,26 +179,35 @@ public class Controller {
         return false;
     }
 
-    public boolean checkForAMatch(Card []cards){
+    /**
+     * Checa se as cartas viradas para cima formam um par e atualiza o placar e o indicador de quem é vez
+     * basendo-se no resultado.
+     */
+    public boolean checkForAMatch(){
         boolean match;
         match = false;
 
         if(this.cards_facing_up[0] != null && this.cards_facing_up[1] != null){
             for(Card c : this.getCardsFacingUp()){
                 for(Card b : this.getCardsFacingUp()){
-                    if(b.getCardId() != c.getCardId() && b.getPairId() == c.getPairId()){
+                    if (b.getCardId() != c.getCardId() && b.getPairId() == c.getPairId()) {
                         match = true;
+                        break;
                     }
                 }
             }
         }
 
-        this.wasAMatch(match, cards);
+        this.wasAMatch(match);
 
         return match;
     }
 
-    private void wasAMatch(boolean was_it, Card []cards){
+    /**
+     * Executa as atualização o placar e o indicador de quem é vez basendo-se no resultado.
+     * @param was_it Se um par foi formado (true), ou não (false).
+     */
+    private void wasAMatch(boolean was_it){
         if(was_it){
             this.remaining_cards -= 2;
 
@@ -198,12 +224,19 @@ public class Controller {
         this.ready_to_check = false;
     }
 
+    /**
+     * Esvazia o vetor e a quantidade de cartas viradas para cima.
+     */
     public void unflipCards(){
         this.cards_facing_up[0] = null;
         this.cards_facing_up[1] = null;
         this.number_of_cards_facing_up = 0;
     }
 
+    /**
+     * Executa as alterações necessárias para o fim do turno.
+     * @param was_a_match Um par foi formado (true), ou não (false).
+     */
     public void endOfTurn(boolean was_a_match){
         this.unflipCards();
 
@@ -212,6 +245,10 @@ public class Controller {
         }
     }
 
+    /**
+     * Pausa a execução do thread do programa de acordo com o parâmetros.
+     * @param miliseconds  Quantidade de milisegundos a ser parados.
+     */
     public void wait(int miliseconds){
         try {
             Thread.sleep(miliseconds);
@@ -221,48 +258,92 @@ public class Controller {
         }
     }
 
+    /**
+     * Altera o valor que determina se a verificação de par deve ser feita.
+     * @param is_it_ready A verificação de par deve ser feita (true), ou não (false).
+     */
     public void setReadyToCheck(boolean is_it_ready){
         this.ready_to_check = is_it_ready;
     }
 
+    /**
+     * Altera o número de cartas viradas para cima.
+     * @param number_of_cards_facing_up O número de cartas viradas para cima.
+     */
     public void setNumber_of_cards_facing_up(int number_of_cards_facing_up) {
         this.number_of_cards_facing_up = number_of_cards_facing_up;
     }
 
+    /**
+     * Avisa ao controller que uma carta foi virada.
+     * @param c Carta que foi virada.
+     */
     public void flippedACard(Card c){
         this.cards_facing_up[this.number_of_cards_facing_up] = c;
     }
 
+    /**
+     * Recupera o vetor de cartas viradas para cima.
+     * @return O vetor de cartas viradas para cima.
+     */
     public Card[] getCardsFacingUp() {
         return cards_facing_up;
     }
 
+    /**
+     * Retorna se é a vez do jogador.
+     * @return É a vez do jogador (true), ou não (false).
+     */
     public boolean isPlayersTurn() {
         return is_players_turn;
     }
 
+    /**
+     * Retorna se a verificação de par deve ser feita..
+     * @return Se a verificação de par deve ser feita (true), ou não (false).
+     */
     public boolean isReadyToCheck(){ return this.ready_to_check; }
 
+    /**
+     * Retorna o número de cartas viradas para cima.
+     * @return O número de cartas viradas para cima.
+     */
     public int getNumberOfCardsFacingUp() {
         return number_of_cards_facing_up;
     }
 
+    /**
+     * Retorna o número de pares feitos pelo jogador.
+     * @return O número de pares feitos pelo jogador.
+     */
     public int getPlayersScore() {
         return players_score;
     }
 
-    public int getCpusScore() {
-        return cpus_score;
-    }
+    /**
+     * Retorna o número de pares feitos pela Cpu.
+     * @return O número de pares feitos pela Cpu.
+     */
+    public int getCpusScore() { return cpus_score; }
 
-    public int getRemainingCards() {
-        return remaining_cards;
-    }
+    /**
+     * Retorna o número de cartas restantes no jogo.
+     * @return O número de cartas restantes no jogo.
+     */
+    public int getRemainingCards() { return remaining_cards; }
 
+    /**
+     * Retorna o placar pronto para ser mostrado na tela.
+     * @return O placar em String.
+     */
     public String getScoreToString() {
         return "<html><h2>" + this.getCpusScore() + " <i>X</i> " + this.getPlayersScore() + "</h2></html>";
     }
 
+    /**
+     * Retorna o texto indicador de quem é a vez pronto para ser mostrado na tela.
+     * @return O indicador de vez em String.
+     */
     public String getTurnLabel(){
         if(this.isPlayersTurn()){
             return "<html><h1>Vez do jogador!</h1></html>";

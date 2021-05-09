@@ -5,20 +5,20 @@ import memorygame.model.Card;
 /**
  * Emula o modo de pensar e agir de uma máquina.
  * @author Leonardo
- * @version 2.4.7
- * @since 2.0.0
+ * @version 2.5.0b - stable
+ * @since 2.0.0b - stable
  */
 public class CpuBrain {
     /** Armazena uma cópia de cada carta vista pela CPU; a posição onde a carta é armazenada é igual à posição da carta no jogo;
      * o vetor é inicializado com "null" em todas as posições. */
-    private Card[] cards_seen;
+    private final Card[] cards_seen;
     /** Armazena dois inteiros que correspondem às posições das próximas duas cartas a serem escolhidas pela CPU. */
-    private int[] next_move;
+    private final int[] next_move;
     /** Armazena o número de cartas viradas pela CPU no turno atual. */
     private int cards_flipped_this_turn;
     /** Armazena valores booleanos de acordo com o posição da carta, representada pelo índice no vetor;
      * true se a carta com posição == índice no vetor foi vista pela CPU, false do contrário. */
-    private boolean[] positions_seen;
+    private final boolean[] positions_seen;
 
     /**
      * Inicializa a Cpu baseando-se na número de pares diferentes que existem.
@@ -63,10 +63,9 @@ public class CpuBrain {
 
     /**
      * Método através do qual a Cpu decide qual das duas posições armazendas em "next_move" devem ser selecionadas.
-     * @param number_of_pairs Número de pares diferentes no jogo.
      * @return A posição que será selecionada.
      */
-    public int makeAMove(int number_of_pairs){
+    public int makeAMove(){
         // Antes de começarmos:
         // -> Uma jogada ideal é aquela jogada em que existe certeza de que irá resultar em um par formado
 
@@ -203,8 +202,10 @@ public class CpuBrain {
     /**
      * Retorna um vetor com as cartas vistas pela máquina.
      * @return Cartas vistas.
+     * @deprecated 2.1.2 Abandonado por ter caído em desuso após primeira otimização do programa.
      */
     public Card[] getCardsSeen() {
         return cards_seen;
     }
+
 }

@@ -1,14 +1,16 @@
 package memorygame;
 
-import memorygame.model.*;
 import memorygame.view.*;
 
-import javax.swing.*;
-import java.awt.*;
-
+/**
+ * Classe principal do programa.
+ * @author Leonardo
+ * @version 2.5.0b - stable
+ * @since 1.0.0b - stable
+ */
 public class MemoryGame {
     public static void main(String[] args) {
-        JFrame win = new MainWindow();
+        new MainWindow();
     }
 
 }
